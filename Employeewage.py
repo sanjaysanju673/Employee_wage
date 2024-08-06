@@ -1,5 +1,12 @@
-import random
+'''
+    @Author: v sanjay kumar
+    @Date: 2024-07-02 01:00:30
+    @Last Modified by: v sanjay kumar
+    @Last Modified time: 2024-07-02 01:00:30
+    @Title : Employee wage problem
+'''
 
+import random
 def check_attendance():
     """
     Check the attendance for an employee.
@@ -71,6 +78,24 @@ def wage_per_month(name):
     print(f"{name} employee monthly wage is {total_month_wage}")
     return total_month_wage
 
+def wage_per_codition(name,attendence):
+    total_days =0
+    total_hours =0
+    monthly_wages =[]
+    monthly_wage =0
+    while total_hours<=100 and total_days <= 20:
+        if(attendence=='full time'):
+            total_hours +=8
+            wage =daily_wage(name,attendence)
+            monthly_wages.append(wage)
+            monthly_wage +=wage
+        elif(attendence =='part time'):
+            total_hours +=4
+            wage = part_time(name,attendence)
+        else:
+            monthly_wage.append(0)
+    print('Employee monthly wage',monthly_wage)
+    return monthly_wages
 def main():
     """
     Display the menu and handle user choices.
