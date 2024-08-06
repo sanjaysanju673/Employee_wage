@@ -1,11 +1,10 @@
 '''
     @Author: v sanjay kumar
-    @Date: 2024-07-04 01:00:30
+    @Date: 2024-07-04 04:00:30
     @Last Modified by: v sanjay kumar
-    @Last Modified time: 2024-07-04 01:00:30
+    @Last Modified time: 2024-07-04 04:00:30
     @Title : Employee wage problem
 '''
-
 
 import random
 class Employee:
@@ -59,41 +58,55 @@ class Company:
         wage = self.wage_per_hour * hours
         return wage
 
-class EmpWageBuilder:
+class CompanyEmpWage:
     def __init__(self, company):
         self.company = company
-        self.employees = {}
+        self.total_wage = 0
 
-    def add_employee(self, employee):
-        if employee.name not in self.employees:
-            self.employees[employee.name] = employee
+class EmpWageBuilder:
+    def __init__(self):
+        self.company_wages = {}
 
-    def calculate_monthly_wage(self, employee):
+    def add_company(self, company):
+        if company.name not in self.company_wages:
+            self.company_wages[company.name] = CompanyEmpWage(company)
+
+    def calculate_monthly_wage(self, company_name, employee):
         """
-        Calculate the total monthly wage for an employee for the company.
+        Calculate the total monthly wage for an employee for a specific company.
 
         Parameters:
+        - company_name: Name of the company
         - employee: Employee object
 
         Returns:
         - Total monthly wage of the employee
         """
+        if company_name not in self.company_wages:
+            print("Company not found.")
+            return 0
+
+        company_emp_wage = self.company_wages[company_name]
+        company = company_emp_wage.company
+
         total_hours = 0
         total_days = 0
         total_wage = 0
-        
-        while total_hours <= self.company.max_working_hours and total_days < self.company.max_working_days:
+        monthly_wages = []
+        while total_hours <= company.max_working_hours and total_days < company.max_working_days:
             attendance = employee.check_attendance()
-            daily_wage = self.company.calculate_daily_wage(attendance)
+            daily_wage = company.calculate_daily_wage(attendance)
+            monthly_wages.append(daily_wage)
             total_wage += daily_wage
             if attendance == 'full time':
-                total_hours += self.company.full_time_hours
+                total_hours += company.full_time_hours
             elif attendance == 'part time':
-                total_hours += self.company.part_time_hours
+                total_hours += company.part_time_hours
             total_days += 1
         
         employee.total_wage = total_wage
-        return total_wage
+        company_emp_wage.total_wage += total_wage
+        return total_wage, monthly_wages
 
 def main():
     """
@@ -105,12 +118,14 @@ def main():
         "techmahindra": Company("techmahindra", 22, 18, 90),
     }
 
-    builders = {name: EmpWageBuilder(company) for name, company in companies.items()}
+    builder = EmpWageBuilder()
+    for company in companies.values():
+        builder.add_company(company)
 
     while True:
         try:
             print("Menu:")
-            print("1. Calculate Monthly Wage for Company")
+            print("1. Calculate Monthly Wage for Employee")
             print("2. Exit")
             choice = int(input("Enter Your Choice: "))
 
@@ -118,12 +133,11 @@ def main():
                 name = input("Enter the name of the employee: ")
                 company_name = input("Enter the company name (tcs, techmahindra, apple): ")
 
-                if company_name in builders:
+                if company_name in companies:
                     employee = Employee(name)
-                    builder = builders[company_name]
-                    builder.add_employee(employee)
-                    total_wage = builder.calculate_monthly_wage(employee)
+                    total_wage, monthly_wages = builder.calculate_monthly_wage(company_name, employee)
                     print(f"{name}'s monthly wage for {company_name} is {total_wage}")
+                    print("Daily wages:", monthly_wages)
                 else:
                     print("Invalid company name. Please enter a valid company.")
 
