@@ -1,10 +1,3 @@
-'''
-    @Author: v sanjay kumar
-    @Date: 2024-07-02 02:30:30
-    @Last Modified by: v sanjay kumar
-    @Last Modified time: 2024-07-02 02:30:30
-    @Title : Employee wage problem
-'''
 import random
 
 def check_attendance():
@@ -58,6 +51,26 @@ def part_time(name, attendance):
     print(f'{name} wage is {wage}')
     return wage
 
+def wage_per_month(name):
+    """
+    Calculate the total monthly wage for an employee.
+
+    Parameters:
+    - name: Name of the employee
+
+    Returns:
+    - Total monthly wage of the employee
+    """
+    total_month_wage = 0
+    for _ in range(20):
+        attendance = check_attendance()
+        if attendance == 'full time':
+            total_month_wage += daily_wage(name, attendance)
+        elif attendance == 'part time':
+            total_month_wage += part_time(name, attendance)
+    print(f"{name} employee monthly wage is {total_month_wage}")
+    return total_month_wage
+
 def main():
     """
     Display the menu and handle user choices.
@@ -68,7 +81,8 @@ def main():
             print("1. Check Attendance")
             print("2. Calculate Full-Time Daily Wage")
             print("3. Calculate Part-Time Daily Wage")
-            print("4. Exit")
+            print("4. Calculate Monthly Wage")
+            print("5. Exit")
             choice = int(input("Enter Your Choice: "))
 
             if choice == 1:
@@ -78,20 +92,18 @@ def main():
             elif choice == 2:
                 name = input("Enter the name of the employee: ")
                 attendance = check_attendance()
-                if attendance == 'full time':
-                    daily_wage(name, attendance)
-                else:
-                    print(f"{name} is not full time. Current status: {attendance}")
+                daily_wage(name, attendance)
 
             elif choice == 3:
                 name = input("Enter the name of the employee: ")
                 attendance = check_attendance()
-                if attendance == 'part time':
-                    part_time(name, attendance)
-                else:
-                    print(f"{name} is not part time. Current status: {attendance}")
+                part_time(name, attendance)
 
             elif choice == 4:
+                name = input("Enter the name of the employee: ")
+                wage_per_month(name)
+
+            elif choice == 5:
                 print("Exiting the program.")
                 break
 
@@ -101,7 +113,5 @@ def main():
         except ValueError:
             print("Error: Please enter a numeric value.")
 
-
-
-if __name__ =='__main__':
+if __name__ == '__main__':
     main()
